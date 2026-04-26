@@ -1,0 +1,20 @@
+{
+    "name": "CupkekGames.InventorySystem.RPGStats",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a57eb40d9a9e0984a816dda1fdae8adf",
+        "GUID:5c28ece2cfc331d45b93b74343fc8f80",
+        "GUID:66a9028f1bcb8134ea44ffd3f24a2b1e",
+        "GUID:c95c4fa533d6fdb47871e2223c77f6d0",
+        "GUID:8c5a58f4ceeaeff428a5333f02ab4313"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,27 @@
+{
+  "name": "com.cupkekgames.inventory",
+  "displayName": "CupkekGames Inventory",
+  "version": "0.1.0",
+  "author": {
+    "name": "CupkekGames",
+    "url": "https://www.docs.cupkek.games"
+  },
+  "unity": "6000.0",
+  "documentationUrl": "https://docs.cupkek.games/",
+  "description": "Inventory system for CupkekGames packages: items, stacks, slots, drag-and-drop integration. Includes RPGStats bridge for equipment-stat modifiers.",
+  "keywords": [
+    "Inventory",
+    "Equipment",
+    "Items",
+    "Drag and Drop",
+    "RPG",
+    "CupkekGames"
+  ],
+  "dependencies": {
+    "com.cupkekgames.core": "0.1.0",
+    "com.cupkekgames.luna": "1.4.0",
+    "com.cupkekgames.data": "0.1.0",
+    "com.cupkekgames.servicelocator": "0.1.0",
+    "com.cupkekgames.rpgstats": "0.1.0"
+  }
+}
