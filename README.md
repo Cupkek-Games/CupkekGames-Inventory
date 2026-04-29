@@ -9,7 +9,7 @@ Inventory system: items, stacks, slots, drag-and-drop. Plus RPGStats bridge for 
 
 ## Dependencies
 
-- `com.cupkekgames.singleton` (drag-session singleton)
+- `com.cupkekgames.singletons` (drag-session singleton)
 - `com.cupkekgames.luna` (inventory UI)
 - `com.cupkekgames.data` (inventory data via IData)
 - `com.cupkekgames.rpgstats` (equipment-stat modifiers)

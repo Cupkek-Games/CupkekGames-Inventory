@@ -1,7 +1,7 @@
 ﻿{
   "name": "com.cupkekgames.inventory",
   "displayName": "CupkekGames Inventory",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": {
     "name": "CupkekGames",
     "url": "https://www.docs.cupkek.games"
@@ -22,6 +22,6 @@
     "com.cupkekgames.data": "0.1.0",
     "com.cupkekgames.services": "0.1.0",
     "com.cupkekgames.rpgstats": "0.1.0",
-    "com.cupkekgames.singleton": "0.1.0"
+    "com.cupkekgames.singletons": "0.1.0"
   }
 }

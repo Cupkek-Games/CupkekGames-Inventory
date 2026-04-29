@@ -24,7 +24,7 @@ com.cupkekgames.inventory/
 
 ## Dependencies
 
-- `com.cupkekgames.singleton` (drag-session singleton)
+- `com.cupkekgames.singletons` (drag-session singleton)
 - `com.cupkekgames.luna` (UI components for inventory display)
 - `com.cupkekgames.data` (inventory data persistence)
 - `com.cupkekgames.rpgstats` (stat modifiers)
