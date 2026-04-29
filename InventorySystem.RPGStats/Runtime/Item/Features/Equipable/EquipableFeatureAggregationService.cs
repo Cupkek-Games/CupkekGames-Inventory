@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using CupkekGames.InventorySystem;
 using CupkekGames.RPGStats;
-using CupkekGames.Systems;
+using CupkekGames.Services;
 using UnityEngine;
 
 namespace CupkekGames.InventorySystem.RPGStats

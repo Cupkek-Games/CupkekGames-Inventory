@@ -1,7 +1,7 @@
-{
+﻿{
   "name": "com.cupkekgames.inventory",
   "displayName": "CupkekGames Inventory",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "CupkekGames",
     "url": "https://www.docs.cupkek.games"
@@ -18,10 +18,10 @@
     "CupkekGames"
   ],
   "dependencies": {
-    "com.cupkekgames.core": "0.1.0",
     "com.cupkekgames.luna": "1.4.0",
     "com.cupkekgames.data": "0.1.0",
-    "com.cupkekgames.servicelocator": "0.1.0",
-    "com.cupkekgames.rpgstats": "0.1.0"
+    "com.cupkekgames.services": "0.1.0",
+    "com.cupkekgames.rpgstats": "0.1.0",
+    "com.cupkekgames.singleton": "0.1.0"
   }
 }

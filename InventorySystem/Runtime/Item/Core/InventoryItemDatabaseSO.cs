@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using CupkekGames.Data;
-using CupkekGames.Systems;
+using CupkekGames.Services;
 using UnityEngine;
 
 namespace CupkekGames.InventorySystem
