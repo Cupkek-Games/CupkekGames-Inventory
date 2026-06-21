@@ -80,8 +80,11 @@ namespace CupkekGames.InventorySystem
       IReadOnlyList<IAssetCatalog<InventoryItemDefinitionSO>> definitionCatalogs = ItemDefinitionCatalogs;
       for (int i = 0; i < definitionCatalogs.Count; i++)
       {
-        InventoryItemDefinitionSO definition = definitionCatalogs[i]?.GetValue(key);
-        if (definition != null)
+        // TryGetValue: a miss in one catalog of a multi-catalog probe is
+        // expected and must not trigger GetValue's dev-build warning.
+        if (definitionCatalogs[i] != null &&
+            definitionCatalogs[i].TryGetValue(key, out var obj) &&
+            obj is InventoryItemDefinitionSO definition)
           return definition.Data;
       }
 
