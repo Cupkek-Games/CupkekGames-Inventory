@@ -33,7 +33,37 @@ namespace CupkekGames.InventorySystem.RPGStats
         }
 
         /// <summary>
+        /// Adds one equipment-type slot: accepts items whose <see cref="EquipableFeature"/> equipment
+        /// type matches <paramref name="typeKey"/>, rendered into the UXML element named
+        /// <paramref name="rootElementName"/>.
+        /// </summary>
+        public void AddEquipmentTypeSlot(
+            string typeKey,
+            string rootElementName,
+            Sprite emptyIcon = null,
+            string childElementName = null,
+            string displayName = null)
+        {
+            var d = new EquipmentSlotDescriptor
+            {
+                SlotId = typeKey,
+                DisplayName = string.IsNullOrEmpty(displayName) ? typeKey : displayName,
+                RootElementName = rootElementName,
+                ChildElementName = childElementName ?? "",
+                EmptyIcon = emptyIcon
+            };
+            d.Metadata.Add(new SlotMetadataEntry
+            {
+                Key = RpgEquipmentSlotMetadataKeys.EquipmentType,
+                Value = typeKey
+            });
+            d.AcceptPolicy = RpgEquipmentSlotAcceptPolicies.EquipmentType;
+            _rows.Add(d);
+        }
+
+        /// <summary>
         /// Adds up to <c>min(typeKeys.Count, rootElementNames.Count)</c> equipment-type slots (consumable category not used).
+        /// Positional zip of the three lists; for one slot at a time prefer <see cref="AddEquipmentTypeSlot"/>.
         /// </summary>
         public void AddEquipmentTypeSlots(
             IReadOnlyList<string> typeKeys,
@@ -47,22 +77,11 @@ namespace CupkekGames.InventorySystem.RPGStats
             int n = Mathf.Min(typeKeys.Count, rootElementNames.Count);
             for (int i = 0; i < n; i++)
             {
-                string key = typeKeys[i];
-                var d = new EquipmentSlotDescriptor
-                {
-                    SlotId = key,
-                    DisplayName = key,
-                    RootElementName = rootElementNames[i],
-                    ChildElementName = childElementName ?? "",
-                    EmptyIcon = emptyIcons != null && i < emptyIcons.Count ? emptyIcons[i] : null
-                };
-                d.Metadata.Add(new SlotMetadataEntry
-                {
-                    Key = RpgEquipmentSlotMetadataKeys.EquipmentType,
-                    Value = key
-                });
-                d.AcceptPolicy = RpgEquipmentSlotAcceptPolicies.EquipmentType;
-                _rows.Add(d);
+                AddEquipmentTypeSlot(
+                    typeKeys[i],
+                    rootElementNames[i],
+                    emptyIcons != null && i < emptyIcons.Count ? emptyIcons[i] : null,
+                    childElementName);
             }
         }
 
