@@ -18,11 +18,11 @@
     "CupkekGames"
   ],
   "dependencies": {
-    "com.cupkekgames.luna": "1.9.8",
+    "com.cupkekgames.luna": "2.0.0",
     "com.cupkekgames.data": "0.3.0",
-    "com.cupkekgames.services": "0.1.1",
-    "com.cupkekgames.rpgstats": "0.1.1",
-    "com.cupkekgames.singletons": "0.1.1",
+    "com.cupkekgames.services": "0.1.4",
+    "com.cupkekgames.rpgstats": "0.2.0",
+    "com.cupkekgames.singletons": "0.1.2",
     "com.cupkekgames.keyvaluedatabases": "0.2.0"
   }
 }
