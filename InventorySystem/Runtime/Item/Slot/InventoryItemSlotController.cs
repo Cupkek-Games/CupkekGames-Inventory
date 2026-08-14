@@ -207,9 +207,17 @@ namespace CupkekGames.InventorySystem
                 _tooltipManipulator.Close();
             }
 
+            InventoryItem itemBeforeClick = _item;
+            int amountBeforeClick = _item != null ? _item.Amount : 0;
+
             OnClick?.Invoke(this);
 
-            if (_tooltipManipulator != null && !IsEmpty)
+            // Re-show only while the click left the binding untouched. A handler
+            // that moved, replaced, or consumed from the item (place-into-loadout
+            // flows) must not get the old tooltip re-shown over the new state —
+            // that stale tooltip then floats until the pointer leaves the slot.
+            if (_tooltipManipulator != null && !IsEmpty &&
+                ReferenceEquals(_item, itemBeforeClick) && _item.Amount == amountBeforeClick)
             {
                 _tooltipManipulator.Show();
             }
