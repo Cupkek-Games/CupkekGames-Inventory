@@ -1,14 +1,18 @@
 using CupkekGames.InventorySystem;
+using Unity.Scripting.LifecycleManagement;
 
 namespace CupkekGames.InventorySystem.RPGStats
 {
     /// <summary>
     /// Shared RPG bridge policy instances for assigning <see cref="EquipmentSlotDescriptor.AcceptPolicy"/> at layout time.
     /// </summary>
-    public static class RpgEquipmentSlotAcceptPolicies
+    public static partial class RpgEquipmentSlotAcceptPolicies
     {
+        [NoAutoStaticsCleanup]
         private static readonly RpgConsumableCategoryEquipmentSlotAcceptPolicy ConsumableCategoryInstance = new();
+        [NoAutoStaticsCleanup]
         private static readonly RpgEquipmentTypeEquipmentSlotAcceptPolicy EquipmentTypeInstance = new();
+        [NoAutoStaticsCleanup]
         private static readonly AnyMatchingEquipmentSlotAcceptPolicy DefaultComposite = new(
             new IEquipmentSlotAcceptPolicy[] { ConsumableCategoryInstance, EquipmentTypeInstance });
 

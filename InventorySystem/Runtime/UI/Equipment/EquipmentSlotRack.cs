@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using CupkekGames.Luna;
+using Unity.Scripting.LifecycleManagement;
 
 namespace CupkekGames.InventorySystem
 {
@@ -10,10 +11,11 @@ namespace CupkekGames.InventorySystem
     /// Binds <see cref="EquipmentSlotDescriptor"/> entries to <see cref="InventoryItemSlotController"/> instances
     /// (parallel active lists). In-memory equipped state sync only — no save/serialization.
     /// </summary>
-    public sealed class EquipmentSlotRack
+    public sealed partial class EquipmentSlotRack
     {
 #if UNITY_EDITOR
-        private static readonly HashSet<string> EditorRebuildWarnOnce = new();
+        [AutoStaticsCleanup]
+        private static HashSet<string> EditorRebuildWarnOnce = new();
 
         private static void LogRebuildMissOnce(EquipmentSlotDescriptor d, string detail)
         {

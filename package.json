@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "com.cupkekgames.inventory",
   "displayName": "CupkekGames Inventory",
   "version": "0.3.2",
@@ -6,7 +6,7 @@
     "name": "CupkekGames",
     "url": "https://www.docs.cupkek.games"
   },
-  "unity": "6000.0",
+  "unity": "6000.5",
   "documentationUrl": "https://docs.cupkek.games/",
   "description": "Inventory system for CupkekGames packages: items, stacks, slots, drag-and-drop integration. Includes RPGStats bridge for equipment-stat modifiers.",
   "keywords": [

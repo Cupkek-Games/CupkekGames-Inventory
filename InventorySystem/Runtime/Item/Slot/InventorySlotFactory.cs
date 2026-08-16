@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 using CupkekGames.Luna;
+using Unity.Scripting.LifecycleManagement;
 
 namespace CupkekGames.InventorySystem
 {
@@ -13,8 +14,9 @@ namespace CupkekGames.InventorySystem
         TooltipPosition tooltipPosition);
 
     /// <summary>Built-in <see cref="InventoryItemSlotFactoryDelegate"/> values.</summary>
-    public static class InventoryItemSlotFactory
+    public static partial class InventoryItemSlotFactory
     {
+        [NoAutoStaticsCleanup]
         public static readonly InventoryItemSlotFactoryDelegate Default = (db, owner, parent, tc, tp) =>
             new InventoryItemSlotController(db, owner, parent, tc, tp);
 
