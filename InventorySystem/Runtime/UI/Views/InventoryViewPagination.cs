@@ -18,21 +18,24 @@ namespace CupkekGames.InventorySystem
     protected TooltipManipulator _emptyTooltipManipulator;
     protected Func<InventoryItem, InventoryItemDefinition, ItemStatData> _getAttributeComparison;
     protected InventoryItemSlotFactoryDelegate _slotFactory;
-    // Properties
+    // Two data modes. Bound (inventory != null): the view pages the live
+    // inventory and a SetItemList is a caller bug, reported instead of ignored.
+    // Unbound (inventory == null): the view pages exactly the list it is given.
+    private List<InventoryItem> _unboundItems = new();
     protected override List<InventoryItem> _itemList
     {
-      get
-      {
-        if (_inventory == null)
-        {
-          return new List<InventoryItem>();
-        }
-
-        return _inventory.Items;
-      }
+      get => _inventory != null ? _inventory.Items : _unboundItems;
       set
       {
+        if (_inventory != null)
+        {
+          Debug.LogError(
+            "[InventoryViewPagination] SetItemList on a view bound to an inventory is ignored: " +
+            "a bound view pages the inventory. Build the view with inventory: null to page a curated list.");
+          return;
+        }
 
+        _unboundItems = value ?? new List<InventoryItem>();
       }
     }
     // Tooltip
