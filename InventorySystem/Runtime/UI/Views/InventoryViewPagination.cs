@@ -143,16 +143,6 @@ namespace CupkekGames.InventorySystem
       container.style.display = DisplayStyle.None;
     }
 
-    public void ShowOnlyFilterButtons(VisualElement container, string buttonName, List<int> visibleIndices)
-    {
-      if (container == null) return;
-      var buttons = container.Query<Button>(buttonName).ToList();
-      for (int i = 0; i < buttons.Count; i++)
-      {
-        buttons[i].style.display = visibleIndices.Contains(i) ? DisplayStyle.Flex : DisplayStyle.None;
-      }
-    }
-
     protected void OnItemSlotClickInner(InventoryItemSlotController controller)
     {
       OnItemSlotClick?.Invoke(controller);
