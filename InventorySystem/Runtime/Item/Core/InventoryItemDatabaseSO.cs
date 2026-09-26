@@ -130,7 +130,12 @@ namespace CupkekGames.InventorySystem
 
       InventoryItemDefinition definition = GetItemDefinition(itemReference.ItemKey);
       if (definition != null)
+      {
         item.BaseMaxStackAmount = definition.MaxStackAmount;
+        // The constructor clamped the amount to the default cap of 1; clamp it
+        // again against the definition's real one.
+        item.SetAmount(itemReference.Amount);
+      }
 
       return item;
     }
