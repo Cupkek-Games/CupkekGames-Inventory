@@ -12,6 +12,9 @@ namespace CupkekGames.InventorySystem
         protected InventoryItemSlotController _dragStarterSlot;
         protected InventoryItemSlotController _dragElementSlot;
         public event Action<int, int, VisualElement, InventoryItemSlotController> OnItemDrop;
+
+        /// <summary>The slot the drag started from: its item is what is being dragged.</summary>
+        public InventoryItemSlotController StarterSlot => _dragStarterSlot;
         public ItemDragAndDrop(
             LunaUIManager uiElementManager,
             VisualElement dragArea,

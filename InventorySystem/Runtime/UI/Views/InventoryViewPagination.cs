@@ -47,6 +47,7 @@ namespace CupkekGames.InventorySystem
     protected Action<int, int, VisualElement, InventoryItemSlotController> _onDrop;
     protected VisualElement _dragArea;
     protected bool _allowDropInventory = false;
+    protected Func<IWorldDropTarget> _worldDropTarget;
     /// <summary>USS classes applied to valid drop targets while dragging (e.g. <c>highlight</c>).</summary>
     protected List<string> _dropSlotHighlightClasses;
     // Events
@@ -115,6 +116,22 @@ namespace CupkekGames.InventorySystem
       _onDrop = onDrop;
       _dragArea = dragArea;
       _allowDropInventory = allowDropInventory;
+    }
+
+    /// <summary>
+    /// Lets an item dragged from this view land outside the UI (Luna's world drop): a pot in
+    /// the scene, a 3D slot. The view makes a drag for every item even with no UI drop slot,
+    /// and a release over no UI slot asks <paramref name="targetUnderPointer"/>. The drag
+    /// ghost goes into <paramref name="dragArea"/>, or into the one SetDragAndDrop gave.
+    /// The target reads the item from the drag (<see cref="ItemDragAndDrop.StarterSlot"/>).
+    /// Null turns it off. Rebinds (a refresh) pick it up.
+    /// </summary>
+    public void SetWorldDrop(Func<IWorldDropTarget> targetUnderPointer, VisualElement dragArea = null)
+    {
+      if (dragArea != null) _dragArea = dragArea;
+      if (targetUnderPointer != null && _dragArea == null)
+        throw new InvalidOperationException("[Inventory] SetWorldDrop needs a drag area: pass one, or call SetDragAndDrop first.");
+      _worldDropTarget = targetUnderPointer;
     }
 
     public void SetGetTooltipSetups(Func<InventoryItem, InventoryItemDefinition, Func<List<TooltipContainerSetup>>> getTooltipSetups)
@@ -191,7 +208,7 @@ namespace CupkekGames.InventorySystem
     protected virtual ItemDragAndDrop CreateDragAndDrop(int slotIndex, InventoryItemSlotController slotController, InventoryItem inventoryItem)
     {
       List<VisualElement> dropSlots = GetDropSlots(inventoryItem);
-      if (dropSlots.Count == 0)
+      if (dropSlots.Count == 0 && _worldDropTarget == null)
       {
         return null;
       }
@@ -201,7 +218,8 @@ namespace CupkekGames.InventorySystem
       dragSlotController.SetGetStatComparison(_getAttributeComparison);
 
       var itemDragAndDrop = new ItemDragAndDrop(LunaUIManager, _dragArea, slotIndex, dropSlots, null, _itemSlotTemplate, slotController, dragSlotController);
-      itemDragAndDrop.OnItemDrop += _onDrop;
+      if (_onDrop != null) itemDragAndDrop.OnItemDrop += _onDrop;
+      if (_worldDropTarget != null) itemDragAndDrop.SetWorldDrop(_worldDropTarget);
       if (_dropSlotHighlightClasses != null && _dropSlotHighlightClasses.Count > 0)
         itemDragAndDrop.SetDropSlotClasses(new List<string>(_dropSlotHighlightClasses));
 
