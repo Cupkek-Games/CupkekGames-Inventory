@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using CupkekGames.Data;
 using CupkekGames.Luna;
 using CupkekGames.Services;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace CupkekGames.InventorySystem
@@ -14,11 +13,21 @@ namespace CupkekGames.InventorySystem
     /// Tooltips resolve human-readable text via registered <see cref="IValueCatalog"/> (same as the CatalogKey inspector); fallback is the raw key.
     /// Slot USS classes on the background use <see cref="UssClassUtility.ToUssSlug"/> on <see cref="IValueCatalog.GetDisplayValue"/> when available (e.g. <c>common</c>),
     /// otherwise on the key (digits preserved). <see cref="ClearSlotVisual"/> removes legacy key classes and every slug that could be applied for known tier keys.
+    /// The tooltip's tier line carries <see cref="TooltipTierUssClass"/> plus a modifier with the same slug, and no inline colour, so a theme colours it.
     /// </summary>
     [Serializable]
     [FeatureGroup("Presentation")]
     public sealed class ItemTierFeature : IItemFeature, IItemSlotVisual
     {
+        /// <summary>
+        /// USS class on the tooltip's tier line ("Tier: Rare"). The line also carries a modifier with
+        /// the slug the slot gets (<c>rare</c> becomes <c>item-tooltip-tier--rare</c>), so a theme
+        /// colours every tier line with <c>.item-tooltip-tier</c> and one tier with
+        /// <c>.item-tooltip-tier--rare</c>. The modifier, not the bare slug, keeps a theme's slot tier
+        /// rules (<c>.rare</c>) off the line. Without a theme rule the line takes the tooltip's label colour.
+        /// </summary>
+        public const string TooltipTierUssClass = "item-tooltip-tier";
+
         [CatalogKeyConstraint(InventoryConstants.ItemTierCatalogId)]
         public CatalogKey Tier;
 
@@ -65,8 +74,11 @@ namespace CupkekGames.InventorySystem
             return null;
         }
 
-        /// <summary>USS class for slot background: slug from display when resolved, else slug from key.</summary>
-        private static string GetSlotUssClass(CatalogKey tier)
+        /// <summary>
+        /// USS slug for the tier: slug from display when resolved, else slug from key. The slot
+        /// background carries it as is; the tooltip's tier line as a <see cref="TooltipTierUssClass"/> modifier.
+        /// </summary>
+        private static string GetTierUssClass(CatalogKey tier)
         {
             if (tier.IsEmpty)
                 return null;
@@ -95,7 +107,13 @@ namespace CupkekGames.InventorySystem
             label.AddToClassList("text-xl");
             label.AddToClassList("mt-0");
             label.AddToClassList("pt-0");
-            label.style.color = Color.white;
+            // No inline colour: an inline style beats every sheet, so a light tooltip card could
+            // not darken the line. The theme colours it through these two classes. The tier is a
+            // modifier, not the slot's bare slug, so slot tier rules (.rare) stay off the line.
+            label.AddToClassList(TooltipTierUssClass);
+            string uss = GetTierUssClass(effective);
+            if (!string.IsNullOrEmpty(uss))
+                label.AddToClassList(TooltipTierUssClass + "--" + uss);
             host.Add(label);
         }
 
@@ -109,7 +127,7 @@ namespace CupkekGames.InventorySystem
             if (background == null)
                 return;
 
-            string uss = GetSlotUssClass(effective);
+            string uss = GetTierUssClass(effective);
             if (!string.IsNullOrEmpty(uss))
                 background.AddToClassList(uss);
         }
@@ -137,7 +155,7 @@ namespace CupkekGames.InventorySystem
                         background.RemoveFromClassList(tierKey);
 
                     CatalogKey lookup = TierKeyForLookup(tierKey);
-                    string uss = GetSlotUssClass(lookup);
+                    string uss = GetTierUssClass(lookup);
                     if (!string.IsNullOrEmpty(uss) && removed.Add(uss))
                         background.RemoveFromClassList(uss);
                 }

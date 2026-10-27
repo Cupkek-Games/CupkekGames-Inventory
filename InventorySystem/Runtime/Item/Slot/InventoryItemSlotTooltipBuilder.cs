@@ -101,7 +101,10 @@ namespace CupkekGames.InventorySystem
             return extensions.Count > 0 ? extensions : null;
         }
 
-        /// <param name="slotIconBackground">Icon source from the slot button; use <c>default</c> when the slot has no background yet.</param>
+        /// <param name="slotIconBackground">
+        /// The item art as the slot painted it, read from <see cref="InventoryItemSlotController.ArtElement"/>
+        /// (the template's Icon element, else the slot button); use <c>default</c> when the slot has no art yet.
+        /// </param>
         public TooltipContainerSetup Build(
             InventoryItem item,
             InventoryItemDefinition itemDefinition,

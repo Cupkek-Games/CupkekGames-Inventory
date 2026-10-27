@@ -6,8 +6,22 @@ using CupkekGames.Luna;
 
 namespace CupkekGames.InventorySystem
 {
+    /// <summary>
+    /// Binds one inventory item to a slot template. The template names its parts:
+    /// <c>Background</c> (the slot's <see cref="Button"/>, required), an optional <c>Icon</c>
+    /// element for the item art (<see cref="IconElementName"/>), and the optional corner labels
+    /// <c>TopLeft</c>, <c>TopRight</c>, <c>BottomLeft</c> and <c>BottomRight</c> (the amount).
+    /// </summary>
     public class InventoryItemSlotController
     {
+        /// <summary>
+        /// Name of the optional art element in a slot template. When the template has one, the
+        /// item art (and the empty icon) is painted on it, so the slot's face can carry layers
+        /// under the art (a baked underlay, a soft shadow) and over it (a gloss). Without one, the
+        /// art is the <see cref="Background"/> button's own background-image.
+        /// </summary>
+        public const string IconElementName = "Icon";
+
         protected readonly InventoryItemSlotTooltipBuilder TooltipBuilder;
         protected readonly InventoryItemSlotFeatureVisuals FeatureVisuals;
 
@@ -34,6 +48,16 @@ namespace CupkekGames.InventorySystem
 
         public VisualElement Parent;
         public Button Background;
+
+        /// <summary>The template's <see cref="IconElementName"/> element; null when the template has none.</summary>
+        public VisualElement Icon;
+
+        /// <summary>
+        /// Where the item art is painted and read back (the tooltip's image, a detail panel):
+        /// <see cref="Icon"/> when the template has one, else the <see cref="Background"/> button.
+        /// </summary>
+        public VisualElement ArtElement => Icon ?? Background;
+
         public Label TopLeft;
         public Label TopRight;
         public Label BottomLeft;
@@ -123,6 +147,7 @@ namespace CupkekGames.InventorySystem
 
             Background.clicked += OnButtonClick;
 
+            Icon = Parent.Q<VisualElement>(IconElementName);
             TopLeft = Parent.Q<Label>("TopLeft");
             TopRight = Parent.Q<Label>("TopRight");
             BottomLeft = Parent.Q<Label>("BottomLeft");
@@ -142,7 +167,7 @@ namespace CupkekGames.InventorySystem
 
             if (IsEmpty && Background != null)
             {
-                Background.style.backgroundImage = icon != null ? new StyleBackground(icon) : null;
+                SetArt(icon);
             }
         }
 
@@ -241,7 +266,7 @@ namespace CupkekGames.InventorySystem
             return TooltipBuilder.Build(
                 _item,
                 _itemDefinition,
-                Background.style.backgroundImage,
+                ArtElement.style.backgroundImage,
                 _attributeNames,
                 getComparison);
         }
@@ -254,7 +279,7 @@ namespace CupkekGames.InventorySystem
             {
                 if (Background != null)
                 {
-                    Background.style.backgroundImage = _emptyIcon != null ? new StyleBackground(_emptyIcon) : null;
+                    SetArt(_emptyIcon);
                     ClearLabels();
                     Background.RemoveFromClassList("selected");
                     if (_selected)
@@ -267,11 +292,10 @@ namespace CupkekGames.InventorySystem
             if (Background == null)
                 return;
 
-            Sprite icon = _itemDatabase.GetItemIcon(_item);
-            Background.style.backgroundImage = icon != null ? new StyleBackground(icon) : null;
+            SetArt(_itemDatabase.GetItemIcon(_item));
             if (BottomRight != null)
             {
-                BottomRight.text = _item.Amount > 1 ? "x" + _item.Amount : "";
+                BottomRight.text = _item.Amount > 1 ? FormatAmount(_item.Amount) : "";
             }
 
             Background.RemoveFromClassList("selected");
@@ -287,10 +311,26 @@ namespace CupkekGames.InventorySystem
         {
             if (Background != null)
             {
-                Background.style.backgroundImage = _emptyIcon != null ? new StyleBackground(_emptyIcon) : null;
+                SetArt(_emptyIcon);
             }
 
             ClearLabels();
+        }
+
+        /// <summary>
+        /// The amount label's text for a stack (called only when the amount is above one; a
+        /// single item shows no amount). Default <c>x8</c>; override for the game's own format,
+        /// for example a bare <c>8</c> on a count chip.
+        /// </summary>
+        protected virtual string FormatAmount(int amount)
+        {
+            return "x" + amount;
+        }
+
+        // Paints the item art, or the empty icon, on the art element (Icon or the Background button).
+        private void SetArt(Sprite sprite)
+        {
+            ArtElement.style.backgroundImage = sprite != null ? new StyleBackground(sprite) : null;
         }
 
         protected void UpdateTooltip(Func<List<TooltipContainerSetup>> getSetups)
