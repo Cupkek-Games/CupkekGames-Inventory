@@ -15,6 +15,7 @@ namespace CupkekGames.InventorySystem
 
         IEnumerable<string> GetAllItemKeys();
         Sprite GetItemIcon(InventoryItem item);
+        Sprite GetItemIcon(InventoryItemDefinition definition);
         InventoryItem CreateItem(InventoryItemReference itemReference);
     }
 }

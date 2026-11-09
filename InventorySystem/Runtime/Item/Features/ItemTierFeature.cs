@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using CupkekGames.Data;
 using CupkekGames.Luna;
 using CupkekGames.Services;
@@ -49,6 +50,20 @@ namespace CupkekGames.InventorySystem
             }
 
             return Tier;
+        }
+
+        /// <summary>
+        /// <see cref="GetEffectiveTier"/> as a number, for games that key tiers by index ("0", "1", ...).
+        /// Throws on an empty or non-numeric key: an authoring bug, not a tier.
+        /// </summary>
+        public int GetEffectiveTierIndex(InventoryItem item)
+        {
+            CatalogKey effective = GetEffectiveTier(item);
+            if (effective.IsEmpty || !int.TryParse(effective.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out int tier))
+                throw new FormatException(
+                    $"[Inventory] tier key '{effective.Key}' on item '{item?.Key.Key}' is not a tier index.");
+
+            return tier;
         }
 
         /// <summary>

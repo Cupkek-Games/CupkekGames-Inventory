@@ -29,6 +29,11 @@ namespace CupkekGames.InventorySystem
             return null;
         }
 
+        /// <summary><see cref="GetFeature{T}"/> for a feature the caller requires; throws, naming the item, when it is missing.</summary>
+        public T GetRequiredFeature<T>() where T : class, IFeature
+            => GetFeature<T>() ?? throw new InvalidOperationException(
+                $"[Inventory] item '{Name}' has no {typeof(T).Name}.");
+
         public bool HasFeature<T>() where T : class, IFeature
             => GetFeature<T>() != null;
 

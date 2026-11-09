@@ -16,8 +16,6 @@ namespace CupkekGames.InventorySystem
     menuName = "CupkekGames/Inventory/Inventory Item Database")]
   public class InventoryItemDatabaseSO : ScriptableObject, IInventoryItemDatabase
   {
-    private IAssetCatalog<Sprite> _iconCatalog;
-
     private static IReadOnlyList<IAssetCatalog<InventoryItemDefinitionSO>> ItemDefinitionCatalogs =>
       ServiceLocator.GetAll<IAssetCatalog<InventoryItemDefinitionSO>>(InventoryConstants.ItemsCatalogId);
 
@@ -31,10 +29,6 @@ namespace CupkekGames.InventorySystem
           $"No IAssetCatalog<InventoryItemDefinitionSO> registered with key '{InventoryConstants.ItemsCatalogId}'. " +
           "Add at least one InventoryItemDefinitionCatalog to your ServiceRegistry.");
     }
-
-    private IAssetCatalog<Sprite> ResolveIconCatalog() =>
-      _iconCatalog ??=
-        ServiceLocator.Get<IAssetCatalog<Sprite>>(InventoryConstants.IconsCatalogId, silent: true);
 
     public IEnumerable<string> GetAllItemKeys()
     {
@@ -91,35 +85,30 @@ namespace CupkekGames.InventorySystem
       return null;
     }
 
+    /// <summary>The icon of the item's definition. Throws when the item has no definition or the icon is missing.</summary>
     public Sprite GetItemIcon(InventoryItem item)
     {
-      IAssetCatalog<Sprite> iconCatalog = ResolveIconCatalog();
-      if (iconCatalog == null)
-      {
-        Debug.LogWarning(
-          $"IAssetCatalog<Sprite>('{InventoryConstants.IconsCatalogId}') not found in ServiceLocator");
-        return null;
-      }
+      InventoryItemDefinition definition = GetItemDefinition(item.Key)
+        ?? throw new KeyNotFoundException($"[Inventory] no item definition for key '{item.Key.Key}'.");
+      return GetItemIcon(definition);
+    }
 
-      InventoryItemDefinition definition = GetItemDefinition(item.Key);
-      if (definition == null)
-      {
-        Debug.LogWarning(
-          $"InventoryItemDefinition not found for key: {item.Key.Key}");
-        return null;
-      }
-
+    /// <summary>
+    /// The sprite under <see cref="InventoryItemDefinition.IconKey"/>; an empty catalog on the key means
+    /// <see cref="InventoryConstants.IconsCatalogId"/>. Throws when the catalog is not registered or holds
+    /// no sprite for the key: a missing icon is a content bug, not a blank image.
+    /// </summary>
+    public Sprite GetItemIcon(InventoryItemDefinition definition)
+    {
       CatalogKey iconRef = definition.IconKey;
       string iconCatalogId = string.IsNullOrEmpty(iconRef.Catalog)
         ? InventoryConstants.IconsCatalogId
         : iconRef.Catalog;
 
-      IAssetCatalog<Sprite> resolvedIconCatalog =
-        ServiceLocator.Get<IAssetCatalog<Sprite>>(iconCatalogId, silent: true) ?? iconCatalog;
-
-      Sprite sprite = resolvedIconCatalog.GetValue(iconRef.Key);
-      if (sprite == null)
-        Debug.LogWarning($"Sprite not found for key: {iconRef.Key}");
+      IAssetCatalog<Sprite> iconCatalog = ServiceLocator.Get<IAssetCatalog<Sprite>>(iconCatalogId);
+      if (!iconCatalog.TryGetValue(iconRef.Key, out Object found) || found is not Sprite sprite)
+        throw new KeyNotFoundException(
+          $"[Inventory] item '{definition.Name}' has no icon: catalog '{iconCatalogId}' holds no sprite for key '{iconRef.Key}'.");
 
       return sprite;
     }

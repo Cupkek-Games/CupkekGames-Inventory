@@ -31,6 +31,55 @@ namespace CupkekGames.InventorySystem
             return RemoveItem(item);
         }
 
+        /// <summary>How many of the item keyed <paramref name="itemKey"/> the inventory holds, across its stacks.</summary>
+        public int Count(string itemKey)
+        {
+            int count = 0;
+            foreach (InventoryItem item in Items)
+            {
+                if (item != null && item.Key.Key == itemKey)
+                    count += item.Amount;
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// Takes every line out, stack by stack (a recipe, a price in items). Throws, taking
+        /// nothing, when the inventory does not hold all of them.
+        /// </summary>
+        public void RemoveAll(IReadOnlyList<InventoryItemReference> lines)
+        {
+            var needed = new Dictionary<string, int>();
+            foreach (InventoryItemReference line in lines)
+            {
+                needed.TryGetValue(line.ItemKey.Key, out int sum);
+                needed[line.ItemKey.Key] = sum + line.Amount;
+            }
+
+            foreach (KeyValuePair<string, int> need in needed)
+            {
+                int held = Count(need.Key);
+                if (held < need.Value)
+                    throw new InvalidOperationException(
+                        $"[Inventory] RemoveAll needs {need.Value} of '{need.Key}' but the inventory holds {held}.");
+            }
+
+            foreach (KeyValuePair<string, int> need in needed)
+            {
+                int left = need.Value;
+                foreach (InventoryItem item in new List<InventoryItem>(Items))
+                {
+                    if (left <= 0) break;
+                    if (item == null || item.Key.Key != need.Key) continue;
+
+                    int take = Math.Min(left, item.Amount);
+                    RemoveItem(item.ID, take);
+                    left -= take;
+                }
+            }
+        }
+
         /// <summary>
         /// Moves an item into a slot controller (inventory or equipment UI). Does <b>not</b> enforce
         /// <see cref="IEquipmentSlotAcceptPolicy"/> — for equipment targets, call
