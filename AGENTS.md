@@ -17,7 +17,6 @@ com.cupkekgames.inventory/
   AGENTS.md
   InventorySystem/                ← CupkekGames.InventorySystem.asmdef
     Runtime/                        (items, stacks, slots, drag-and-drop, equipment)
-    Editor/
   InventorySystem.RPGStats/       ← CupkekGames.InventorySystem.RPGStats.asmdef
     Runtime/                        (equipment ↔ stat-modifier bridge)
 ```
@@ -29,6 +28,7 @@ com.cupkekgames.inventory/
 - `com.cupkekgames.data` (inventory data persistence)
 - `com.cupkekgames.rpgstats` (stat modifiers)
 - `com.cupkekgames.services`
+- `com.cupkekgames.keyvaluedatabases`
 
 ## Coding Conventions
 
