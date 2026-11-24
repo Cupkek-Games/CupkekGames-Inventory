@@ -118,6 +118,15 @@ namespace CupkekGames.InventorySystem
                 return;
 
             string display = TryResolveTierDisplay(effective) ?? effective.Key;
+            // A game that draws the tier its own way (a pill, beside another line) says so through the
+            // tooltip's extensions or a registered service.
+            IItemTierTooltip custom = context.GetExtension<IItemTierTooltip>() ?? ServiceLocator.Get<IItemTierTooltip>(silent: true);
+            if (custom != null)
+            {
+                custom.Build(host, effective, display, in context);
+                return;
+            }
+
             var label = new Label($"Tier: {display}");
             label.AddToClassList("text-xl");
             label.AddToClassList("mt-0");
